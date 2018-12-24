@@ -2,7 +2,7 @@
 Automate creation of READMEs for containers
 
 # Prerequisites
-* Python 2/3 installed and in system path in Windows Os
+* Python2/Python3 installed and in system path in Windows Os
 * tkinter, requests, future and selenium packages for python installed using pip 
 * [Google Chrome Driver](https://chromedriver.storage.googleapis.com/2.42/chromedriver_win32.zip) Place the downloaded chromedriver.exe file under ReadmeAutomation/lib/ directory.
 

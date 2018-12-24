@@ -71,8 +71,29 @@ def add_source_tab( source_text ):
             
 def add_license_tag( license_list ) :
     '''Function that takes license list and appends it to the README.md file'''
-    with open(_filename,'a') as file:
-        file.write("\n# License Information \n")
-        file.write(" This image uses following licenses \n")
-        for each_license in license_list:
-            file.write( " * " + each_license + "\n")
+
+    license_list = license_list.split('|')
+    for i in range(len(license_list)):
+        license_list[i] = license_list[i].replace("'","")
+        license_list[i] = license_list[i].replace("[","")
+        license_list[i] = license_list[i].replace("]","")
+
+    #print(license_list)
+    
+    if len(license_list)!=0:
+        with open(_filename,'a') as file:
+            file.write("\n# License Information \n")
+            file.write(" This image uses following licenses ")
+            
+
+            file.write(" [ ")
+            for each_license in license_list[:-1]:
+                if len(each_license)!=0:
+                    file.write( each_license.strip() + ", ")
+
+            each_license = license_list[-1]
+            if len(each_license)!=0:
+                file.write( each_license.strip())
+            
+            file.write(" ] ")
+

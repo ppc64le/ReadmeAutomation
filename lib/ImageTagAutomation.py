@@ -1,11 +1,17 @@
 '''
 Python module to fetech image tags and required github repo links
 '''
+from __future__ import print_function
+from builtins import input
+
+from future.standard_library import install_aliases
+install_aliases()
+
 
 import requests
 import argparse
-import urllib.request
-import urllib.error
+from urllib.request import urlopen
+from urllib.error import HTTPError
 import json
 from requests.auth import HTTPBasicAuth
 
@@ -23,9 +29,9 @@ def _find_between(s, first, last):
 
 def _get_www_authenticate_header(api_url):
     try:
-        resp = urllib.request.urlopen(api_url)
+        resp = urlopen(api_url)
         response = resp.read()
-    except urllib.error.HTTPError as error:
+    except HTTPError as error:
         response = error.info()['Www-Authenticate']
     return response 
 
@@ -147,8 +153,8 @@ def _search_tags_in_directory(tag_list, json_data):
     for obj in json_data:
         #print(obj)
         for tag in temp_tag_list:
-            print(obj['name'])
-            print(tag)
+            #print(obj['name'])
+            #print(tag)
             if tag in obj['name'] :     # check if name of file contains the tag
                 #print("tag found")
                 dict_folder_links[tag] = obj['path']

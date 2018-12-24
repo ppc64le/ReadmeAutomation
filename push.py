@@ -2,15 +2,12 @@
 Python code that needs a list of images and updates it full description on dockerhub with static disclaimer.
 
 Prerequisites:
-    1. Selenium, requests and tkinter library installed in python windows
-    2. Image list stored in imagenames.txt file one per line in same folder as push.py script
-    3. chromedriver.exe present in same folder as push.py script
+    1. Selenium, requests, future and tkinter library installed in python windows
+    2. Image list stored in input_list.csv file one per line in same folder as push.py script
 
 
 Run command:
-    python3 push.py on cmd
-    or
-    Open script in idle editor and Run it.
+    python/python3 push.py 
 '''
 
 
@@ -19,6 +16,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 from tkinter import Tk, Label, Entry, Button
 import time
 import script
@@ -33,11 +31,12 @@ passwordStr = 'password'
 usernameStrGithub = 'username'
 passwordStrGithub = 'password'
 
-options = webdriver.ChromeOptions()
+options = Options()
 options.add_argument("--start-maximized")
 
+
 # path to chromedriver for selenium to use
-browser = webdriver.Chrome('lib/chromedriver.exe',chrome_options=options)
+browser = webdriver.Chrome('lib/chromedriver.exe', options=options)
 
 def get_dockerhub_login_box():
     root = Tk()
@@ -112,12 +111,11 @@ def get_github_login_box():
 def login_to_docker():
 
     # open this web[page
-    browser.get('https://hub.docker.com/login/')
+    browser.get('https://id.docker.com/login/?next=%2Fid%2Foauth%2Fauthorize%2F%3Fclient_id%3D43f17c5f-9ba4-4f13-853d-9d0074e349a7%26next%3D%252F%253Fref%253Dlogin%26nonce%3DeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiI0M2YxN2M1Zi05YmE0LTRmMTMtODUzZC05ZDAwNzRlMzQ5YTciLCJleHAiOjE1NDUyMTA1MDAsImlhdCI6MTU0NTIxMDIwMCwicmZwIjoiWXkwLUJOSlJGY2FRSFF1UzBCSWFFUT09IiwidGFyZ2V0X2xpbmtfdXJpIjoiLz9yZWY9bG9naW4ifQ.DnqN2TXoAD_TSAKHzarJeRoWFbGzUBT8lbPjDAv9OyE%26redirect_uri%3Dhttps%253A%252F%252Fhub.docker.com%252Fsso%252Fcallback%26response_type%3Dcode%26scope%3Dopenid%26state%3DeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiI0M2YxN2M1Zi05YmE0LTRmMTMtODUzZC05ZDAwNzRlMzQ5YTciLCJleHAiOjE1NDUyMTA1MDAsImlhdCI6MTU0NTIxMDIwMCwicmZwIjoiWXkwLUJOSlJGY2FRSFF1UzBCSWFFUT09IiwidGFyZ2V0X2xpbmtfdXJpIjoiLz9yZWY9bG9naW4ifQ.DnqN2TXoAD_TSAKHzarJeRoWFbGzUBT8lbPjDAv9OyE')
 
 
     # wait till the username xpath is found
-    username = WebDriverWait(browser, 10).until(
-    EC.presence_of_element_located((By.XPATH, '//*[@id="nw_username"]')))
+    username = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="nw_username"]')))
 
     # type the username
     username.send_keys(usernameStr)
@@ -148,25 +146,26 @@ def push_file(image_name, folder_name):
         text = file.read()
         text = text.replace('\t', '    ')
         
-    browser.get('https://hub.docker.com/r/ibmcom/'+image_name+'/')
+    browser.get('https://cloud.docker.com/u/ibmcom/repository/docker/ibmcom/'+image_name)
     
     # Short description
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div[1]/span[2]/i')))
+        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div[1]/div/div/div[1]/div[2]/button')))
 
     # click to use text area
     editButton.click()
 
     # wait till text area loads
     editText = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div[2]/form/div/div[1]/input')))
+        EC.presence_of_element_located((By.NAME,'editableField')))
     # clear previous contents
     editText.clear()
     editText.send_keys("Docker image for "+ image_name)
     
     # get the save button through xpath
-    submitButton = browser.find_element_by_xpath('//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div[2]/form/div/div[2]/ul/li[2]/button')
+    submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div[1]/div/div/div[1]/div[2]/div/form/div[2]/button[2]')
+
 
     # click to save
     submitButton.click()
@@ -176,14 +175,14 @@ def push_file(image_name, folder_name):
     # Full description
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div/div/div/div[1]/div[2]/div[1]/span[2]')))
+        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div[2]/div[2]/div/div/div[1]/button')))
 
     # click to use text area
     editButton.click()
 
     # wait till text area loads
     editText = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div/div/div/div[1]/div[2]/div[2]/form/div/textarea')))
+        EC.presence_of_element_located((By.NAME,'editableField')))
     # clear previous contents
     editText.clear()
 
@@ -195,11 +194,12 @@ def push_file(image_name, folder_name):
     #time.sleep(5)
         
     # get the save button through xpath
-    submitButton = browser.find_element_by_xpath('//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div/div/div/div[1]/div[2]/div[2]/form/div/div/ul/li[2]/button')
+    submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div[2]/div[2]/div/div/form/div[2]/button[2]')
 
     
     # click to save
     submitButton.click()
+
 
 def _find_between(s, first, last):
     try:
@@ -225,11 +225,12 @@ if __name__ == '__main__':
         with open('input.txt','w') as file:
             for line in lines:
                 #print(line)
-                image_name, folder_name = line.strip().split(',')[0].strip() ,line.strip().split(',')[1].strip()
+                image_name, folder_name, license_list = line.strip().split(',')[0].strip() ,line.strip().split(',')[1].strip(), line.strip().split(',')[2].strip()
                 file.write(image_name)
                         
                 folder_name = _find_between(folder_name,'master/','/')
-                file.write("," + folder_name + '\n')
+                file.write("," + folder_name )
+                file.write("," + license_list + "\n")
         
         with open('input.txt') as file:
             lines = file.readlines()
@@ -237,11 +238,14 @@ if __name__ == '__main__':
         with open('UpdatedImageList.csv','w') as file:
             for line in lines:
                 ret = script.main(line, usernameStrGithub, passwordStrGithub)   
-                image_name, folder_name = line.strip().split(',')
+                image_name, folder_name, license_list = line.strip().split(',')
 
                 try:
+                    print(" Uploading README file.. ")
                     push_file(image_name, folder_name)
+                    print(" README file uploaded..")
                 except Exception as e:
+                    print(e)
                     file.write(image_name + "," + "authentication error\n")
                     continue
 
@@ -252,7 +256,7 @@ if __name__ == '__main__':
                 else:
                     file.write(image_name + "," + "success\n")
                 
-        print("Done") 
+        print("\n Done") 
     
 
         

@@ -1,6 +1,7 @@
 '''
 Python module to fetech image tags and required github repo links
 '''
+
 from __future__ import print_function
 from builtins import input
 
@@ -31,6 +32,7 @@ def _get_www_authenticate_header(api_url):
     try:
         resp = urlopen(api_url)
         response = resp.read()
+	
     except HTTPError as error:
         response = error.info()['Www-Authenticate']
     return response 

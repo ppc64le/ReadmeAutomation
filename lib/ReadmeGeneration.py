@@ -2,6 +2,10 @@
 This is a python script that just dumps all the data
 passed to it in a README.md file generated in same folder
 '''
+
+from __future__ import print_function
+from builtins import input
+
 _filename = "README.md"
 def set_file_name(imagename):
     global _filename

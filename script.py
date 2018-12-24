@@ -16,20 +16,18 @@ def main(line, usernameStrGithub , passwordStrGithub):
             print(" Getting dockerfile links..")
             dict_tag_links_on_github, usage_text, remaining_tags, maintainer, source= ITA.get_tag_links_from_github(tag_list, folder_name, usernameStrGithub, passwordStrGithub)
 
-            '''
-            for key , value in dict_tag_links_on_github.items():
+            '''for key , value in dict_tag_links_on_github.items():
                 print(" Key: ", key)
                 print(" Value: ", value)
+	    print(remaining_tags)
+	    '''
 
-            print(remaining_tags)
-            '''
             for tag in remaining_tags:
                 dict_tag_links_on_github[tag] = "https://github.com/ppc64le/build-scripts/blob/master/"+folder_name+"/Dockerfiles"
 
             remaining_tags = []
             
-            print(" Generating readme file..")
-
+            print(" Generating README file..")
             RG.set_file_name(image_name)
             RG.clear_file()
             RG.add_supported_tags_tab(dict_tag_links_on_github, remaining_tags)
@@ -44,7 +42,7 @@ def main(line, usernameStrGithub , passwordStrGithub):
             return "docker"
     except TypeError as e:
         print(e)
-        print("Github api access limit exceeded.. Try after one hour")
+        print(" Invalid github creds or Github api access limit exceeded.. Try after one hour")
         return "github"
         
     except Exception as e:

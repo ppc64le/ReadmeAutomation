@@ -7,17 +7,18 @@ Prerequisites:
 
 
 Run command:
-    python/python3 push.py 
+    python/python3 push.py on cmd
 '''
 
-
+from __future__ import print_function
+from builtins import input
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from tkinter import Tk, Label, Entry, Button
+import getpass
 import time
 import script
 import os
@@ -32,81 +33,15 @@ usernameStrGithub = 'username'
 passwordStrGithub = 'password'
 
 options = Options()
-options.add_argument("--start-maximized")
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+options.add_argument("start-maximized")
+options.add_argument("disable-infobars")
+options.add_argument("--disable-extensions")
+
+browser  = webdriver.Chrome(chrome_options=options, executable_path='/usr/local/bin/chromedriver')
 
 
-# path to chromedriver for selenium to use
-browser = webdriver.Chrome('lib/chromedriver.exe', options=options)
-
-def get_dockerhub_login_box():
-    root = Tk()
-    root.title("Dockerhub credentials")
-
-    #username entry
-    username_label = Label(root, text=" Username: ")
-    username_label.grid( row=0, column=0, padx=(20,20), pady=(10,10))
-    username_entry = Entry(root)
-    #username_entry.pack()
-    username_entry.grid( row=0, column=1, padx=(20,20), pady=(10,10))
-
-    #password entry
-    password_label = Label(root, text=" Password: ")
-    password_label.grid( row=1, column=0, padx=(20,20), pady=(10,10))
-    password_entry = Entry(root, show='*')
-    #password_entry.pack()
-    password_entry.grid( row=1, column=1, padx=(20,20), pady=(10,10))
-
-    def trylogin(): 
-        global usernameStr
-        global passwordStr
-        usernameStr = username_entry.get()
-        passwordStr = password_entry.get()
-        root.quit()
-        root.destroy()
-
-    
-    #when you press this button, trylogin is called
-    button = Button(root, text="submit", command = trylogin) 
-    #button.pack()
-    button.grid( row=2, column=1, padx=(50,50), pady=(10,10))
-
-    #App starter
-    root.mainloop()
-
-def get_github_login_box():
-    root = Tk()
-    root.title("Github credentials")
-
-    #username entry
-    username_label = Label(root, text=" Username: ")
-    username_label.grid( row=0, column=0, padx=(20,20), pady=(10,10))
-    username_entry = Entry(root)
-    #username_entry.pack()
-    username_entry.grid( row=0, column=1, padx=(20,20), pady=(10,10))
-
-    #password entry
-    password_label = Label(root, text=" Password: ")
-    password_label.grid( row=1, column=0, padx=(20,20), pady=(10,10))
-    password_entry = Entry(root, show='*')
-    #password_entry.pack()
-    password_entry.grid( row=1, column=1, padx=(20,20), pady=(10,10))
-
-    def trylogin(): 
-        global usernameStrGithub
-        global passwordStrGithub
-        usernameStrGithub = username_entry.get()
-        passwordStrGithub = password_entry.get()
-        root.quit()
-        root.destroy()
-
-    
-    #when you press this button, trylogin is called
-    button = Button(root, text="submit", command = trylogin) 
-    #button.pack()
-    button.grid( row=2, column=1, padx=(50,50), pady=(10,10))
-
-    #App starter
-    root.mainloop()
 
 def login_to_docker():
 
@@ -134,10 +69,10 @@ def login_to_docker():
 
     # wait till seach box xpath is loaded
     #search = WebDriverWait(browser, 10).until(
-        #EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div[1]/div[1]/div/form/div/div[1]/input')))
+    #EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div[1]/div[1]/div/form/div/div[1]/input')))
 
     time.sleep(10)
-    
+
 
 
 def push_file(image_name, folder_name):
@@ -145,13 +80,14 @@ def push_file(image_name, folder_name):
     with open('lib/readmefiles/'+image_name+'.md') as file:
         text = file.read()
         text = text.replace('\t', '    ')
-        
-    browser.get('https://cloud.docker.com/u/ibmcom/repository/docker/ibmcom/'+image_name)
-    
+
+    browser.get('https://cloud.docker.com/u/ibmcom/repository/docker/ibmcom/'+image_name+'/')
+
     # Short description
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div[1]/div/div/div[1]/div[2]/button')))
+
 
     # click to use text area
     editButton.click()
@@ -159,13 +95,13 @@ def push_file(image_name, folder_name):
     # wait till text area loads
     editText = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located((By.NAME,'editableField')))
+
     # clear previous contents
     editText.clear()
     editText.send_keys("Docker image for "+ image_name)
-    
+
     # get the save button through xpath
     submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div[1]/div/div/div[1]/div[2]/div/form/div[2]/button[2]')
-
 
     # click to save
     submitButton.click()
@@ -177,26 +113,29 @@ def push_file(image_name, folder_name):
     editButton = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div[2]/div[2]/div/div/div[1]/button')))
 
+
     # click to use text area
     editButton.click()
 
     # wait till text area loads
     editText = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located((By.NAME,'editableField')))
+
     # clear previous contents
     editText.clear()
 
-       
-        
+
+
     # type the required text
     #editText.send_keys("\n# Disclaimer \n SUBJECT TO ANY STATUTORY WARRANTIES THAT CANNOT BE EXCLUDED, IBM MAKES NO WARRANTIES OR CONDITIONS, EXPRESS OR IMPLIED, REGARDING THE PROGRAM OR SUPPORT, IF ANY, INCLUDING, BUT NOT LIMITED TO, ANY IMPLIED WARRANTIES OR CONDITIONS OF MERCHANTABILITY, SATISFACTORY QUALITY, FITNESS FOR A PARTICULAR PURPOSE, AND TITLE, AND ANY WARRANTY OR CONDITION OF NON-INFRINGEMENT.")
     editText.send_keys(text)
     #time.sleep(5)
-        
+
     # get the save button through xpath
     submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div[2]/div[2]/div/div/form/div[2]/button[2]')
 
-    
+
+
     # click to save
     submitButton.click()
 
@@ -208,12 +147,24 @@ def _find_between(s, first, last):
         return s[start:end]
     except ValueError:
         return ""
-    
+
 if __name__ == '__main__':
     try:
-        get_dockerhub_login_box()
-        get_github_login_box()
-        login_to_docker()
+        usernameStr = input(" Dockerhub username : ")
+        passwordStr = getpass.getpass(" Dockerhub password : ")
+
+        usernameStrGithub = input(" Github username : ")
+        passwordStrGithub = getpass.getpass(" Github password : ")
+
+        print("\n Checking dockerhub credentials...")
+        try:
+            login_to_docker()
+        except Exception as e:
+            print( e )
+            print(" Invalid credentials... Script will abort")
+            exit()
+
+        print(" Valid credentials..")
 
         if not os.path.exists('lib/readmefiles'):
             os.mkdir('lib/readmefiles')
@@ -227,14 +178,14 @@ if __name__ == '__main__':
                 #print(line)
                 image_name, folder_name, license_list = line.strip().split(',')[0].strip() ,line.strip().split(',')[1].strip(), line.strip().split(',')[2].strip()
                 file.write(image_name)
-                        
+
                 folder_name = _find_between(folder_name,'master/','/')
                 file.write("," + folder_name )
                 file.write("," + license_list + "\n")
-        
+
         with open('input.txt') as file:
             lines = file.readlines()
-            
+
         with open('UpdatedImageList.csv','w') as file:
             for line in lines:
                 ret = script.main(line, usernameStrGithub, passwordStrGithub)   
@@ -255,12 +206,12 @@ if __name__ == '__main__':
                     file.write(image_name + "," + "github error\n")
                 else:
                     file.write(image_name + "," + "success\n")
-                
-        print("\n Done") 
-    
 
-        
+        print("\n\n Done") 
+
+
+
     except Exception as e:
         print("Exception :")
         print(e)
-    
+

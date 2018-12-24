@@ -2,21 +2,12 @@
 Automate creation of READMEs for containers
 
 # Prerequisites
-* Python2/Python3 installed and in system path in Windows Os
-* tkinter, requests, future and selenium packages for python installed using pip 
-* [Google Chrome Driver](https://chromedriver.storage.googleapis.com/2.42/chromedriver_win32.zip) Place the downloaded chromedriver.exe file under ReadmeAutomation/lib/ directory.
-
-```
-pip install selenium
-pip install tkinter
-pip install requests
-pip install future
-```
+* Run install.sh script in lib folder which installs all the prerequisites.
 
 # How to use ?
 
 Input is given through a file named ```input_list.csv``` in the same folder as the push.py script.
-The file should contain image names on dockerhub, corresponding dockerfile links on github ppc64le/buildscripts repo and the licenses used by the image.
+The file should contain image names on dockerhub, corresponding dockerfile links on github ppc64le/buildscripts repo and list of licenses used by the image.
 The script will generate ```input.txt``` containing image names and corresponding folder names from github repo. 
 
 If the script encounters any error during generation of readmefiles, the script will be terminated and list of updated entries will be stored in ```UpdatedImageList.csv```.

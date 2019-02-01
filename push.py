@@ -225,27 +225,27 @@ if __name__ == '__main__':
         with open('input.txt','w') as file:
             for line in lines:
                 #print(line)
-                image_name, folder_name, license_list = line.strip().split(',')[0].strip() ,line.strip().split(',')[1].strip(), line.strip().split(',')[2].strip()
+                image_name, folder_name = line.strip().split(',')[0].strip() ,line.strip().split(',')[1].strip()
                 file.write(image_name)
                         
-                folder_name = _find_between(folder_name,'master/','/')
-                file.write("," + folder_name )
-                file.write("," + license_list + "\n")
-        
+                folder_name = folder_name[ folder_name.find('master/') +len('master/'):]
+                file.write("," + folder_name + "\n")
+                
         with open('input.txt') as file:
             lines = file.readlines()
             
         with open('UpdatedImageList.csv','w') as file:
             for line in lines:
                 ret = script.main(line, usernameStrGithub, passwordStrGithub)   
-                image_name, folder_name, license_list = line.strip().split(',')
+                image_name, folder_name = line.strip().split(',')
 
                 try:
                     print(" Uploading README file.. ")
                     push_file(image_name, folder_name)
                     print(" README file uploaded..")
                 except Exception as e:
-                    print(e)
+                    print( e )
+                    print( "error")
                     file.write(image_name + "," + "authentication error\n")
                     continue
 

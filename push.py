@@ -173,23 +173,12 @@ if __name__ == '__main__':
         with open('input_list.csv') as file:
             lines = file.readlines()
 
-        with open('input.txt','w') as file:
-            for line in lines:
-                #print(line)
-                image_name, folder_name, license_list = line.strip().split(',')[0].strip() ,line.strip().split(',')[1].strip(), line.strip().split(',')[2].strip()
-                file.write(image_name)
-
-                folder_name = _find_between(folder_name,'master/','/')
-                file.write("," + folder_name )
-                file.write("," + license_list + "\n")
-
-        with open('input.txt') as file:
-            lines = file.readlines()
 
         with open('UpdatedImageList.csv','w') as file:
             for line in lines:
                 ret = script.main(line, usernameStrGithub, passwordStrGithub)   
-                image_name, folder_name, license_list = line.strip().split(',')
+                image_name, folder_name = line.strip().split(',')
+                folder_name = folder_name[ folder_name.find('master/') + len('master/'):]
 
                 try:
                     print(" Uploading README file.. ")

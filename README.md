@@ -16,7 +16,7 @@ pip install future
 # How to use ?
 
 Input is given through a file named ```input_list.csv``` in the same folder as the push.py script.
-The file should contain image names on dockerhub, corresponding dockerfile links on github ppc64le/buildscripts repo and the licenses used by the image.
+The file should contain image names on dockerhub, corresponding dockerfile links on github ppc64le/buildscripts repo.
 The script will generate ```input.txt``` containing image names and corresponding folder names from github repo. 
 
 If the script encounters any error during generation of readmefiles, the script will be terminated and list of updated entries will be stored in ```UpdatedImageList.csv```.

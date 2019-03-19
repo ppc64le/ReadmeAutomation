@@ -37,7 +37,7 @@ def add_disclaimer_tab():
     with open(_filename,'a') as file:
         with open('static_content.txt') as rd:
             text = rd.read()
-        file.write("\n"+text)
+        file.write("\n\n"+text)
     
 def add_source_repository_tab(reponame, repolink):
     ''' Function that takes source repository name and its github link as parameters
@@ -72,13 +72,7 @@ def add_source_tab( source_text ):
 def add_license_tag( license_list ) :
     '''Function that takes license list and appends it to the README.md file'''
 
-    license_list = license_list.split('|')
-    for i in range(len(license_list)):
-        license_list[i] = license_list[i].replace("'","")
-        license_list[i] = license_list[i].replace("[","")
-        license_list[i] = license_list[i].replace("]","")
 
-    #print(license_list)
     
     if len(license_list)!=0:
         with open(_filename,'a') as file:
@@ -89,11 +83,12 @@ def add_license_tag( license_list ) :
             file.write(" [ ")
             for each_license in license_list[:-1]:
                 if len(each_license)!=0:
-                    file.write( each_license.strip() + ", ")
-
-            each_license = license_list[-1]
-            if len(each_license)!=0:
-                file.write( each_license.strip())
+                    try:
+                        file.write( each_license.strip() + ", ")
+                    except:
+                        continue
             
             file.write(" ] ")
+
+    
 

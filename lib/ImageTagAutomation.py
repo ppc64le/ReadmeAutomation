@@ -130,7 +130,8 @@ def _get_directory_contents(dirname):
 
 
     # http get request url for fetching directory info
-    url = "https://api.github.com/repos/ppc64le/build-scripts/contents/" + dirname 
+    url = "https://api.github.com/repos/ppc64le/build-scripts/contents/" + dirname
+    #print(url)
     r = requests.get(url,auth=HTTPBasicAuth(_username, _password))
 
     # convert the response in json format
@@ -213,7 +214,7 @@ def get_tag_links_from_github(tag_list, dirname, usernameStrGithub, passwordStrG
     _password = passwordStrGithub
     
     
-    json_data = _get_directory_contents(dirname + "/Dockerfiles/")
+    json_data = _get_directory_contents(dirname )
 
     #print(json_data)
     

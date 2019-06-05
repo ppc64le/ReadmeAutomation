@@ -151,7 +151,7 @@ def push_file(image_name, folder_name):
     # Short description
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div[1]/div/div/div[1]/div[2]/button')))
+        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/button')))
 
     # click to use text area
     editButton.click()
@@ -164,7 +164,7 @@ def push_file(image_name, folder_name):
     editText.send_keys("Docker image for "+ image_name)
     
     # get the save button through xpath
-    submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div[1]/div/div/div[1]/div[2]/div/form/div[2]/button[2]')
+    submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/form/div[2]/button[2]')
 
 
     # click to save
@@ -175,7 +175,7 @@ def push_file(image_name, folder_name):
     # Full description
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div[2]/div[2]/div/div/div[1]/button')))
+        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div/div[2]/div[2]/div/div/div[1]/button')))
 
     # click to use text area
     editButton.click()
@@ -194,7 +194,7 @@ def push_file(image_name, folder_name):
     #time.sleep(5)
         
     # get the save button through xpath
-    submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div[2]/div[2]/div/div/form/div[2]/button[2]')
+    submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div/div[2]/div[2]/div/div/form/div[2]/button[2]')
 
     
     # click to save
@@ -228,7 +228,7 @@ if __name__ == '__main__':
                 image_name, folder_name = line.strip().split(',')[0].strip() ,line.strip().split(',')[1].strip()
                 file.write(image_name)
                         
-                folder_name = folder_name[ folder_name.find('master/') +len('master/'):]
+                folder_name = folder_name[len('https://github.com/ppc64le/build-scripts/tree/master/'):]
                 file.write("," + folder_name + "\n")
                 
         with open('input.txt') as file:

@@ -146,7 +146,7 @@ def push_file(image_name, folder_name):
         text = file.read()
         text = text.replace('\t', '    ')
         
-    browser.get('https://cloud.docker.com/u/ibmcom/repository/docker/ibmcom/'+image_name)
+    browser.get('https://cloud.docker.com/u/ibmcom/repository/docker/ibmcom/' + image_name)
     
     # Short description
     # wait for the edit tab to load 

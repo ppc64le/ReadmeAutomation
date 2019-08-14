@@ -140,7 +140,7 @@ def login_to_docker():
     
 
 
-def push_file(image_name, folder_name):
+def push_file(image_name):
 
     with open('lib/readmefiles/'+image_name+'.md') as file:
         text = file.read()
@@ -229,6 +229,7 @@ if __name__ == '__main__':
                 file.write(image_name)
                         
                 folder_name = folder_name[len('https://github.com/ppc64le/build-scripts/tree/master/'):]
+                #print(folder_name)
                 file.write("," + folder_name + "\n")
                 
         with open('input.txt') as file:
@@ -236,12 +237,12 @@ if __name__ == '__main__':
             
         with open('UpdatedImageList.csv','w') as file:
             for line in lines:
-                ret = script.main(line, usernameStrGithub, passwordStrGithub)   
+                ret = script.main(line, usernameStrGithub, passwordStrGithub)
                 image_name, folder_name = line.strip().split(',')
 
                 try:
                     print(" Uploading README file.. ")
-                    push_file(image_name, folder_name)
+                    push_file(image_name)
                     print(" README file uploaded..")
                 except Exception as e:
                     print( e )

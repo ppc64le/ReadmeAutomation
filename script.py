@@ -12,10 +12,13 @@ def main(line, usernameStrGithub , passwordStrGithub):
 
         github_url = "https://raw.githubusercontent.com/ppc64le/build-scripts/master/"+ folder_name +"/license_list.csv"
         #print(github_url)
+    
+        folder_name = folder_name[:folder_name.index('/Dockerfiles')]
 
+        
         print("\n Getting image tags..")
         tag_list = ITA.get_image_tags_from_dockerhub(image_name, registry="ibmcom")
-
+        #print(tag_list)
                 
         if tag_list:
             print(" Getting dockerfile links..")
@@ -28,6 +31,7 @@ def main(line, usernameStrGithub , passwordStrGithub):
 
             print(remaining_tags)
             '''
+            
             for tag in remaining_tags:
                 dict_tag_links_on_github[tag] = "https://github.com/ppc64le/build-scripts/blob/master/"+folder_name+"/Dockerfiles"
 

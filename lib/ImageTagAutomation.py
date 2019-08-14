@@ -140,7 +140,7 @@ def _get_directory_contents(dirname):
     return json_data
 
 def _search_tags_in_directory(tag_list, json_data):
-    '''Function that takes list of tags and json data of a directory and check isf respective
+    '''Function that takes list of tags and json data of a directory and check is respective
     dockerfiles exits
     Returns a dictionary of key as tags and values as dockerfile folder github links and a list of tags
     with no corresponding links found'''
@@ -152,15 +152,30 @@ def _search_tags_in_directory(tag_list, json_data):
     json_data = json_data
     
     for obj in json_data:
-        #print(obj)
+        
+        # check if name of file in folder is latest, then get the converted tag through symlink 
+        if obj['name']=="latest":
+            download_url = obj['download_url']
+            r = requests.get(download_url,auth=HTTPBasicAuth(_username, _password))
+            converted_tag = r.text.split()[0].strip()[2:] # to remove "./" from "./x.x.x"
+            dict_folder_links["latest"] = obj['path']
+            temp_tag_list.remove("latest")
+            continue  
+
         for tag in temp_tag_list:
             #print(obj['name'])
             #print(tag)
-            if tag in obj['name'] :     # check if name of file contains the tag
+
+            if obj['name']==tag :     # check if name of file contains the tag
                 #print("tag found")
+                #print( obj['name'], obj['path'])
                 dict_folder_links[tag] = obj['path']
                 #print(obj['path'], end='\n\n')
                 temp_tag_list.remove(tag)
+
+    if "latest" in dict_folder_links.keys():
+        dict_folder_links["latest"] = dict_folder_links[converted_tag]
+                
     return dict_folder_links, temp_tag_list
 
 def _search_dockerfiles_in_folder(dict_folder_links):
@@ -186,6 +201,7 @@ def _search_dockerfiles_in_folder(dict_folder_links):
                 dict_tag_links_on_github[key] = data['html_url']
                 
                 dockerfile_url = data['download_url']
+                #print(dockerfile_url)
                 dockerfile_text = requests.get( dockerfile_url ).text
                 lines = dockerfile_text.split('\n')
                 for line in lines:
@@ -213,14 +229,15 @@ def get_tag_links_from_github(tag_list, dirname, usernameStrGithub, passwordStrG
     _username = usernameStrGithub
     _password = passwordStrGithub
     
-    
-    json_data = _get_directory_contents(dirname )
+    json_data = _get_directory_contents(dirname+"/Dockerfiles" )
 
     #print(json_data)
     
     dict_folder_links, remaining_tags = _search_tags_in_directory(tag_list, json_data)
-
+    #print(dict_folder_links)
+    
     dict_tag_links_on_github, usage_text, maintainer, source = _search_dockerfiles_in_folder(dict_folder_links)
+    #print(dict_tag_links_on_github)
 
     return dict_tag_links_on_github, usage_text, remaining_tags, maintainer, source
 

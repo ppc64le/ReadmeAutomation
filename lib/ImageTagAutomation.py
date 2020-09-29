@@ -1,12 +1,11 @@
 '''
-Python module to fetech image tags and required github repo links
+Python module to fetch image tags and required github repo links
 '''
 from __future__ import print_function
 from builtins import input
 
 from future.standard_library import install_aliases
 install_aliases()
-
 
 import requests
 import argparse
@@ -15,10 +14,12 @@ from urllib.error import HTTPError
 import json
 from requests.auth import HTTPBasicAuth
 
+
 # github creds
 _username = 'username'
 _password = 'password'
 
+#helper functions
 def _find_between(s, first, last):
     try:
         start = s.index(first) + len(first)
@@ -26,6 +27,7 @@ def _find_between(s, first, last):
         return s[start:end]
     except ValueError:
         return ""
+
 
 def _get_www_authenticate_header(api_url):
     try:
@@ -45,15 +47,16 @@ def _get_token(user, password, service, scope, realm):
     r = requests.get(url)
         
     token = _find_between(str(r.content), '"token":"', '","access_token"')
-
     #print (token)
     
     return token
+
 
 def _get_result(api_url, token):
     #print(len(token))
     r = requests.get(api_url, headers={'Authorization':'Bearer ' + token})
     return r
+
 
 def _create_parser():
     # Creating a parser for getting command line arguments
@@ -78,15 +81,12 @@ def get_image_tags_from_dockerhub(image_name="kafka-ppc64le",registry="ibmcom"):
 
         # First we will need to authenticate user credentials on the dockerhub website
         # This verification will return a token for further communication
-
         api_url = args.api_url_start + args.registry_name + "/" + args.image_name + args.api_url_end
         #print(api_url)
         
         #get the Www-Authenticate header
         params = _get_www_authenticate_header(api_url)
-
         #print(params)
-
 
         #parse the params required for the token
         if params:
@@ -101,12 +101,9 @@ def get_image_tags_from_dockerhub(image_name="kafka-ppc64le",registry="ibmcom"):
             # retrieve token
             token = _get_token(args.user, args.password, service, scope, realm)
 
-
-
             # Do the API call as an authenticated user
             #print("Response:")
             response = _get_result(api_url, token)
-
 
             # Format the json data for printing
             json_data = json.loads(response.text)
@@ -127,7 +124,6 @@ def get_image_tags_from_dockerhub(image_name="kafka-ppc64le",registry="ibmcom"):
 
 def _get_directory_contents(dirname):
     '''Function to get the list of all files in a directory on ppc64le/build-scripts repository'''
-
 
     # http get request url for fetching directory info
     url = "https://api.github.com/repos/ppc64le/build-scripts/contents/" + dirname
@@ -223,14 +219,13 @@ def _search_dockerfiles_in_folder(dict_folder_links):
 def get_tag_links_from_github(tag_list, dirname, usernameStrGithub, passwordStrGithub):
     '''Function that takes tag list and a folder name on github and searches respective dockerfile link in the folder'''
 
+    # setting authentication creds
     global _username
-    global _password
-    
+    global _password  
     _username = usernameStrGithub
     _password = passwordStrGithub
     
     json_data = _get_directory_contents(dirname+"/Dockerfiles" )
-
     #print(json_data)
     
     dict_folder_links, remaining_tags = _search_tags_in_directory(tag_list, json_data)

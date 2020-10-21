@@ -34,9 +34,9 @@ passwordStrGithub = 'password'
 options = Options()
 options.add_argument("--start-maximized")
 
-
 # path to chromedriver for selenium to use
 browser = webdriver.Chrome('lib/chromedriver.exe', options=options)
+
 
 def get_dockerhub_login_box():
     root = Tk()
@@ -63,7 +63,6 @@ def get_dockerhub_login_box():
         passwordStr = password_entry.get()
         root.quit()
         root.destroy()
-
     
     #when you press this button, trylogin is called
     button = Button(root, text="submit", command = trylogin) 
@@ -72,6 +71,7 @@ def get_dockerhub_login_box():
 
     #App starter
     root.mainloop()
+
 
 def get_github_login_box():
     root = Tk()
@@ -98,8 +98,7 @@ def get_github_login_box():
         passwordStrGithub = password_entry.get()
         root.quit()
         root.destroy()
-
-    
+ 
     #when you press this button, trylogin is called
     button = Button(root, text="submit", command = trylogin) 
     #button.pack()
@@ -108,11 +107,11 @@ def get_github_login_box():
     #App starter
     root.mainloop()
 
+
 def login_to_docker():
 
     # open this web[page
     browser.get('https://id.docker.com/login/?next=%2Fid%2Foauth%2Fauthorize%2F%3Fclient_id%3D43f17c5f-9ba4-4f13-853d-9d0074e349a7%26next%3D%252F%253Fref%253Dlogin%26nonce%3DeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiI0M2YxN2M1Zi05YmE0LTRmMTMtODUzZC05ZDAwNzRlMzQ5YTciLCJleHAiOjE1NDUyMTA1MDAsImlhdCI6MTU0NTIxMDIwMCwicmZwIjoiWXkwLUJOSlJGY2FRSFF1UzBCSWFFUT09IiwidGFyZ2V0X2xpbmtfdXJpIjoiLz9yZWY9bG9naW4ifQ.DnqN2TXoAD_TSAKHzarJeRoWFbGzUBT8lbPjDAv9OyE%26redirect_uri%3Dhttps%253A%252F%252Fhub.docker.com%252Fsso%252Fcallback%26response_type%3Dcode%26scope%3Dopenid%26state%3DeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiI0M2YxN2M1Zi05YmE0LTRmMTMtODUzZC05ZDAwNzRlMzQ5YTciLCJleHAiOjE1NDUyMTA1MDAsImlhdCI6MTU0NTIxMDIwMCwicmZwIjoiWXkwLUJOSlJGY2FRSFF1UzBCSWFFUT09IiwidGFyZ2V0X2xpbmtfdXJpIjoiLz9yZWY9bG9naW4ifQ.DnqN2TXoAD_TSAKHzarJeRoWFbGzUBT8lbPjDAv9OyE')
-
 
     # wait till the username xpath is found
     username = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="nw_username"]')))
@@ -136,8 +135,7 @@ def login_to_docker():
     #search = WebDriverWait(browser, 10).until(
         #EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/main/div[2]/div[2]/div[2]/div/div[1]/div[1]/div/form/div/div[1]/input')))
 
-    time.sleep(10)
-    
+    time.sleep(10)    
 
 
 def push_file(image_name):
@@ -146,12 +144,14 @@ def push_file(image_name):
         text = file.read()
         text = text.replace('\t', '    ')
         
-    browser.get('https://cloud.docker.com/u/ibmcom/repository/docker/ibmcom/'+image_name)
+    browser.get('https://hub.docker.com/repository/docker/ibmcom/'+image_name)
     
     # Short description
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/button')))
+        EC.presence_of_element_located((By.XPATH,
+        '//*[@id="module-repository-detail"]/div[3]/div/div[1]/div/div/div[1]/div[2]/button'
+        )))
 
     # click to use text area
     editButton.click()
@@ -163,42 +163,36 @@ def push_file(image_name):
     editText.clear()
     editText.send_keys("Docker image for "+ image_name)
     
-    # get the save button through xpath
-    submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/form/div[2]/button[2]')
-
-
-    # click to save
-    submitButton.click()
+    # get the save button through xpath and click
+    updateButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[3]/div/div[1]/div/div/div[1]/div[2]/div/form/div[2]/button[2]')
+    updateButton.click()
 
     time.sleep(3)
 
     # Full description
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[2]/div/div/div[2]/div[2]/div/div/div[1]/button')))
+        EC.presence_of_element_located((By.XPATH,
+        '//*[@id="module-repository-detail"]/div[3]/div/div[2]/div[2]/div/div/div[1]/button'
+        )))
 
     # click to use text area
     editButton.click()
 
     # wait till text area loads
     editText = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.NAME,'editableField')))
+        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[3]/div/div[2]/div[2]/div/div/div[2]/div[1]/textarea')))
     # clear previous contents
     editText.clear()
 
-       
-        
     # type the required text
     #editText.send_keys("\n# Disclaimer \n SUBJECT TO ANY STATUTORY WARRANTIES THAT CANNOT BE EXCLUDED, IBM MAKES NO WARRANTIES OR CONDITIONS, EXPRESS OR IMPLIED, REGARDING THE PROGRAM OR SUPPORT, IF ANY, INCLUDING, BUT NOT LIMITED TO, ANY IMPLIED WARRANTIES OR CONDITIONS OF MERCHANTABILITY, SATISFACTORY QUALITY, FITNESS FOR A PARTICULAR PURPOSE, AND TITLE, AND ANY WARRANTY OR CONDITION OF NON-INFRINGEMENT.")
     editText.send_keys(text)
     #time.sleep(5)
         
     # get the save button through xpath
-    submitButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[2]/div/div/div[2]/div[2]/div/div/form/div[2]/button[2]')
-
-    
-    # click to save
-    submitButton.click()
+    updateButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[3]/div/div[2]/div[2]/div/div/div[2]/div[2]/button[2]')
+    updateButton.click()
 
 
 def _find_between(s, first, last):
@@ -228,7 +222,7 @@ if __name__ == '__main__':
                 image_name, folder_name = line.strip().split(',')[0].strip() ,line.strip().split(',')[1].strip()
                 file.write(image_name)
                         
-                folder_name = folder_name[len('https://github.com/ppc64le/build-scripts/tree/master/'):]
+                folder_name = folder_name[len('https://github.com/ppc64le/build-scripts/tree/master/a/'):]
                 #print(folder_name)
                 file.write("," + folder_name + "\n")
                 

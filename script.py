@@ -8,13 +8,14 @@ def main(line, usernameStrGithub , passwordStrGithub):
 
     try:
         image_name, folder_name = line.strip().split(',')
+        folder_name = folder_name[0] + "/" + folder_name
         #print( folder_name )
 
         github_url = "https://raw.githubusercontent.com/ppc64le/build-scripts/master/"+ folder_name +"/license_list.csv"
         #print(github_url)
     
         folder_name = folder_name[:folder_name.index('/Dockerfiles')]
-
+        #print(folder_name)
         
         print("\n Getting image tags..")
         tag_list = ITA.get_image_tags_from_dockerhub(image_name, registry="ibmcom")

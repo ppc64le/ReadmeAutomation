@@ -150,7 +150,7 @@ def push_file(image_name):
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located((By.XPATH,
-        '//*[@id="module-repository-detail"]/div[3]/div/div[1]/div/div/div[1]/div[2]/button'
+        '/html/body/div[1]/div[1]/div/div[3]/div/div/div[3]/div/div[2]/div/div/div[1]/div[2]/button'
         )))
 
     # click to use text area
@@ -158,13 +158,13 @@ def push_file(image_name):
 
     # wait till text area loads
     editText = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.NAME,'editableField')))
+        EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div[1]/div/div[3]/div/div/div[3]/div/div[2]/div/div/div[1]/div[2]/div/form/div[1]/div/div[1]/textarea[2]')))
     # clear previous contents
     editText.clear()
     editText.send_keys("Docker image for "+ image_name)
     
     # get the save button through xpath and click
-    updateButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[3]/div/div[1]/div/div/div[1]/div[2]/div/form/div[2]/button[2]')
+    updateButton = browser.find_element_by_xpath('/html/body/div[1]/div[1]/div/div[3]/div/div/div[3]/div/div[2]/div/div/div[1]/div[2]/div/form/div[2]/button[2]')
     updateButton.click()
 
     time.sleep(3)
@@ -173,7 +173,7 @@ def push_file(image_name):
     # wait for the edit tab to load 
     editButton = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located((By.XPATH,
-        '//*[@id="module-repository-detail"]/div[3]/div/div[2]/div[2]/div/div/div[1]/button'
+        '/html/body/div[1]/div[1]/div/div[3]/div/div/div[3]/div/div[3]/div[2]/div/div/div[1]/button'
         )))
 
     # click to use text area
@@ -181,7 +181,7 @@ def push_file(image_name):
 
     # wait till text area loads
     editText = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH,'//*[@id="module-repository-detail"]/div[3]/div/div[2]/div[2]/div/div/div[2]/div[1]/textarea')))
+        EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div[1]/div/div[3]/div/div/div[3]/div/div[3]/div[2]/div/div/div[2]/div[1]/textarea')))
     # clear previous contents
     editText.clear()
 
@@ -191,7 +191,7 @@ def push_file(image_name):
     #time.sleep(5)
         
     # get the save button through xpath
-    updateButton = browser.find_element_by_xpath('//*[@id="module-repository-detail"]/div[3]/div/div[2]/div[2]/div/div/div[2]/div[2]/button[2]')
+    updateButton = browser.find_element_by_xpath('/html/body/div[1]/div[1]/div/div[3]/div/div/div[3]/div/div[3]/div[2]/div/div/div[2]/div[2]/button[2]')
     updateButton.click()
 
 

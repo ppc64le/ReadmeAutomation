@@ -46,7 +46,7 @@ def _get_token(user, password, service, scope, realm):
     url = realm + '?service=' + service + '&scope=' + scope
     r = requests.get(url)
         
-    token = _find_between(str(r.content), '"token":"', '","access_token"')
+    token = _find_between(str(r.content), '"token": "', '"')
     #print (token)
     
     return token

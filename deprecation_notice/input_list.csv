@@ -1,0 +1,3 @@
+name,image
+test-repo,
+alpine_python_hello,icr.io/ppc64le-oss/alpine_python_hello

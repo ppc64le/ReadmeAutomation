@@ -29,6 +29,9 @@ class ReadmeAutomation:
 		password.clear()
 		password.send_keys(pswd)
 		password.send_keys(Keys.RETURN)
+		WebDriverWait(self.browser, TIMEOUT).until(
+			EC.presence_of_element_located((By.XPATH, "//span[@data-testid='navBarUsernameDropdown']"))
+		)
 
 	def get_repositories_urls(self) -> list:
 		self.browser.get(f"https://hub.docker.com/repositories/{REPOSITORY}")
